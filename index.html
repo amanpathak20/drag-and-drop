@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Two-Way Drag and Drop</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .drop-zone, .items {
+      width: 300px;
+      min-height: 300px;
+      background-color: #ffffff;
+      border: 3px dashed #aaa;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 10px;
+      padding: 10px;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .drop-zone.hovered, .items.hovered {
+      background-color: #d1ffd6;
+      border-color: #28a745;
+    }
+
+    .item {
+      padding: 10px 20px;
+      background-color: #ffffff;
+      border: 2px solid #007BFF;
+      border-radius: 8px;
+      cursor: grab;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .drop-zone, .items {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🔁 Two-Way Drag and Drop</h2>
+  <div class="container">
+    <!-- First Item Container -->
+    <div class="items" id="box1">
+      <div class="item" draggable="true" id="item1">📦 Item 1</div>
+      <div class="item" draggable="true" id="item2">📦 Item 2</div>
+      <div class="item" draggable="true" id="item3">📦 Item 3</div>
+    </div>
+
+    <!-- Second Item Container -->
+    <div class="items" id="box2">
+      <div class="item" draggable="true" id="item4">📦 Item 4</div>
+      <div class="item" draggable="true" id="item5">📦 Item 5</div>
+      <div class="item" draggable="true" id="item6">📦 Item 6</div>
+      <div class="item" draggable="true" id="item4">📦 Item 7</div>
+      <div class="item" draggable="true" id="item5">📦 Item 8</div>
+      <div class="item" draggable="true" id="item6">📦 Item 9</div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="drop-zone" id="dropZone">
+      🕳️ Drop items here
+    </div>
+  </div>
+
+  <script>
+    const draggableItems = document.querySelectorAll('.item');
+    const allDropZones = document.querySelectorAll('.drop-zone, .items');
+
+    // Handle drag start
+    draggableItems.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.id);
+      });
+    });
+
+    // Handle drag over / leave / drop for all drop zones
+    allDropZones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('hovered');
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('hovered');
+      });
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        const itemId = e.dataTransfer.getData('text/plain');
+        const draggedItem = document.getElementById(itemId);
+        zone.appendChild(draggedItem);
+        zone.classList.remove('hovered');
+      });
+    });
+  </script>
+</body>
+</html>
